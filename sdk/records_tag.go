@@ -198,6 +198,65 @@ func (client *RecordsTag) Replace(baseId string, tableIdOrName string, recordId 
     }
 }
 
+// ReplaceAll Updates up to 10 records, or upserts them when performUpsert is set.
+func (client *RecordsTag) ReplaceAll(baseId string, tableIdOrName string, payload BulkUpdateRequest) (BulkUpdateResponse, error) {
+    pathParams := make(map[string]interface{})
+    pathParams["baseId"] = baseId
+    pathParams["tableIdOrName"] = tableIdOrName
+
+    queryParams := make(map[string]interface{})
+
+    var queryStructNames []string
+
+    u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName", pathParams))
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
+
+    raw, err := json.Marshal(payload)
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    var reqBody = bytes.NewReader(raw)
+
+    req, err := http.NewRequest("PUT", u.String(), reqBody)
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    req.Header.Set("Content-Type", "application/json")
+
+    resp, err := client.internal.HttpClient.Do(req)
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    defer resp.Body.Close()
+
+    respBody, err := io.ReadAll(resp.Body)
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+        var response BulkUpdateResponse
+        err = json.Unmarshal(respBody, &response)
+        if err != nil {
+            return BulkUpdateResponse{}, err
+        }
+
+        return response, nil
+    }
+
+    switch resp.StatusCode {
+        default:
+            return BulkUpdateResponse{}, errors.New("the server returned an unknown status code")
+    }
+}
+
 // Update Updates a single record. Table names and table ids can be used interchangeably. We recommend using table IDs so you don&#039;t need to modify your API request when your table name changes.
 func (client *RecordsTag) Update(baseId string, tableIdOrName string, recordId string, payload Record) (Record, error) {
     pathParams := make(map[string]interface{})
@@ -255,6 +314,65 @@ func (client *RecordsTag) Update(baseId string, tableIdOrName string, recordId s
     switch resp.StatusCode {
         default:
             return Record{}, errors.New("the server returned an unknown status code")
+    }
+}
+
+// UpdateAll Updates up to 10 records, or upserts them when performUpsert is set.
+func (client *RecordsTag) UpdateAll(baseId string, tableIdOrName string, payload BulkUpdateRequest) (BulkUpdateResponse, error) {
+    pathParams := make(map[string]interface{})
+    pathParams["baseId"] = baseId
+    pathParams["tableIdOrName"] = tableIdOrName
+
+    queryParams := make(map[string]interface{})
+
+    var queryStructNames []string
+
+    u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName", pathParams))
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
+
+    raw, err := json.Marshal(payload)
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    var reqBody = bytes.NewReader(raw)
+
+    req, err := http.NewRequest("PATCH", u.String(), reqBody)
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    req.Header.Set("Content-Type", "application/json")
+
+    resp, err := client.internal.HttpClient.Do(req)
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    defer resp.Body.Close()
+
+    respBody, err := io.ReadAll(resp.Body)
+    if err != nil {
+        return BulkUpdateResponse{}, err
+    }
+
+    if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+        var response BulkUpdateResponse
+        err = json.Unmarshal(respBody, &response)
+        if err != nil {
+            return BulkUpdateResponse{}, err
+        }
+
+        return response, nil
+    }
+
+    switch resp.StatusCode {
+        default:
+            return BulkUpdateResponse{}, errors.New("the server returned an unknown status code")
     }
 }
 
