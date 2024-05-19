@@ -27,6 +27,10 @@ func (client *Client) Records() *RecordsTag {
     return NewRecordsTag(client.internal.HttpClient, client.internal.Parser)
 }
 
+func (client *Client) Fields() *FieldsTag {
+    return NewFieldsTag(client.internal.HttpClient, client.internal.Parser)
+}
+
 
 
 
