@@ -31,6 +31,10 @@ func (client *Client) Fields() *FieldsTag {
     return NewFieldsTag(client.internal.HttpClient, client.internal.Parser)
 }
 
+func (client *Client) Table() *TableTag {
+    return NewTableTag(client.internal.HttpClient, client.internal.Parser)
+}
+
 
 
 
