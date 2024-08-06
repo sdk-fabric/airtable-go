@@ -74,6 +74,46 @@ func (client *TablesTag) Create(baseId string, payload Table) (Table, error) {
     }
 
     switch resp.StatusCode {
+        case 400:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Table{}, err
+            }
+
+            return Table{}, &ErrorException{
+                Payload: response,
+            }
+        case 403:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Table{}, err
+            }
+
+            return Table{}, &ErrorException{
+                Payload: response,
+            }
+        case 404:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Table{}, err
+            }
+
+            return Table{}, &ErrorException{
+                Payload: response,
+            }
+        case 500:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Table{}, err
+            }
+
+            return Table{}, &ErrorException{
+                Payload: response,
+            }
         default:
             return Table{}, errors.New("the server returned an unknown status code")
     }
@@ -133,6 +173,46 @@ func (client *TablesTag) Update(baseId string, tableIdOrName string, payload Tab
     }
 
     switch resp.StatusCode {
+        case 400:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Table{}, err
+            }
+
+            return Table{}, &ErrorException{
+                Payload: response,
+            }
+        case 403:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Table{}, err
+            }
+
+            return Table{}, &ErrorException{
+                Payload: response,
+            }
+        case 404:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Table{}, err
+            }
+
+            return Table{}, &ErrorException{
+                Payload: response,
+            }
+        case 500:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Table{}, err
+            }
+
+            return Table{}, &ErrorException{
+                Payload: response,
+            }
         default:
             return Table{}, errors.New("the server returned an unknown status code")
     }

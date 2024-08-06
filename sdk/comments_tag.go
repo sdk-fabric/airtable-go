@@ -69,6 +69,46 @@ func (client *CommentsTag) GetAll(baseId string, tableIdOrName string, recordId 
     }
 
     switch resp.StatusCode {
+        case 400:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return CommentCollection{}, err
+            }
+
+            return CommentCollection{}, &ErrorException{
+                Payload: response,
+            }
+        case 403:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return CommentCollection{}, err
+            }
+
+            return CommentCollection{}, &ErrorException{
+                Payload: response,
+            }
+        case 404:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return CommentCollection{}, err
+            }
+
+            return CommentCollection{}, &ErrorException{
+                Payload: response,
+            }
+        case 500:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return CommentCollection{}, err
+            }
+
+            return CommentCollection{}, &ErrorException{
+                Payload: response,
+            }
         default:
             return CommentCollection{}, errors.New("the server returned an unknown status code")
     }
@@ -129,6 +169,46 @@ func (client *CommentsTag) Create(baseId string, tableIdOrName string, recordId 
     }
 
     switch resp.StatusCode {
+        case 400:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Comment{}, err
+            }
+
+            return Comment{}, &ErrorException{
+                Payload: response,
+            }
+        case 403:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Comment{}, err
+            }
+
+            return Comment{}, &ErrorException{
+                Payload: response,
+            }
+        case 404:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Comment{}, err
+            }
+
+            return Comment{}, &ErrorException{
+                Payload: response,
+            }
+        case 500:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Comment{}, err
+            }
+
+            return Comment{}, &ErrorException{
+                Payload: response,
+            }
         default:
             return Comment{}, errors.New("the server returned an unknown status code")
     }
@@ -190,6 +270,46 @@ func (client *CommentsTag) Update(baseId string, tableIdOrName string, recordId 
     }
 
     switch resp.StatusCode {
+        case 400:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Comment{}, err
+            }
+
+            return Comment{}, &ErrorException{
+                Payload: response,
+            }
+        case 403:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Comment{}, err
+            }
+
+            return Comment{}, &ErrorException{
+                Payload: response,
+            }
+        case 404:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Comment{}, err
+            }
+
+            return Comment{}, &ErrorException{
+                Payload: response,
+            }
+        case 500:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Comment{}, err
+            }
+
+            return Comment{}, &ErrorException{
+                Payload: response,
+            }
         default:
             return Comment{}, errors.New("the server returned an unknown status code")
     }
@@ -244,6 +364,46 @@ func (client *CommentsTag) Delete(baseId string, tableIdOrName string, recordId 
     }
 
     switch resp.StatusCode {
+        case 400:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return CommentDeleteResponse{}, err
+            }
+
+            return CommentDeleteResponse{}, &ErrorException{
+                Payload: response,
+            }
+        case 403:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return CommentDeleteResponse{}, err
+            }
+
+            return CommentDeleteResponse{}, &ErrorException{
+                Payload: response,
+            }
+        case 404:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return CommentDeleteResponse{}, err
+            }
+
+            return CommentDeleteResponse{}, &ErrorException{
+                Payload: response,
+            }
+        case 500:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return CommentDeleteResponse{}, err
+            }
+
+            return CommentDeleteResponse{}, &ErrorException{
+                Payload: response,
+            }
         default:
             return CommentDeleteResponse{}, errors.New("the server returned an unknown status code")
     }

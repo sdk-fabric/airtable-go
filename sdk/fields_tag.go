@@ -75,6 +75,46 @@ func (client *FieldsTag) Create(baseId string, tableId string, payload Field) (F
     }
 
     switch resp.StatusCode {
+        case 400:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Field{}, err
+            }
+
+            return Field{}, &ErrorException{
+                Payload: response,
+            }
+        case 403:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Field{}, err
+            }
+
+            return Field{}, &ErrorException{
+                Payload: response,
+            }
+        case 404:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Field{}, err
+            }
+
+            return Field{}, &ErrorException{
+                Payload: response,
+            }
+        case 500:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Field{}, err
+            }
+
+            return Field{}, &ErrorException{
+                Payload: response,
+            }
         default:
             return Field{}, errors.New("the server returned an unknown status code")
     }
@@ -135,6 +175,46 @@ func (client *FieldsTag) Update(baseId string, tableId string, columnId string, 
     }
 
     switch resp.StatusCode {
+        case 400:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Field{}, err
+            }
+
+            return Field{}, &ErrorException{
+                Payload: response,
+            }
+        case 403:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Field{}, err
+            }
+
+            return Field{}, &ErrorException{
+                Payload: response,
+            }
+        case 404:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Field{}, err
+            }
+
+            return Field{}, &ErrorException{
+                Payload: response,
+            }
+        case 500:
+            var response Error
+            err = json.Unmarshal(respBody, &response)
+            if err != nil {
+                return Field{}, err
+            }
+
+            return Field{}, &ErrorException{
+                Payload: response,
+            }
         default:
             return Field{}, errors.New("the server returned an unknown status code")
     }
