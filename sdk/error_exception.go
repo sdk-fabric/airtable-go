@@ -7,10 +7,13 @@
 import (
     "encoding/json"
     "fmt"
+    
+    
 )
 
 type ErrorException struct {
     Payload Error
+    Previous error
 }
 
 func (e *ErrorException) Error() string {

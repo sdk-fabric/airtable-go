@@ -8,7 +8,8 @@ import (
     
     "encoding/json"
     "errors"
-    "github.com/apioo/sdkgen-go"
+    "fmt"
+    
     "io"
     "net/http"
     "net/url"
@@ -56,20 +57,16 @@ func (client *MetaTag) GetWhoami() (User, error) {
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response User
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return User{}, err
-        }
+        var data User
+        err := json.Unmarshal(respBody, &data)
 
-        return response, nil
+        return data, err
     }
 
-    switch resp.StatusCode {
-        default:
-            return User{}, errors.New("the server returned an unknown status code")
-    }
+    var statusCode = resp.StatusCode
+    return User{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
+
 
 
 

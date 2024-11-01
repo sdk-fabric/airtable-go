@@ -8,7 +8,8 @@ import (
     "bytes"
     "encoding/json"
     "errors"
-    "github.com/apioo/sdkgen-go"
+    "fmt"
+    
     "io"
     "net/http"
     "net/url"
@@ -21,7 +22,7 @@ type FieldsTag struct {
 
 
 
-// Create 
+// Create Creates a new column and returns the schema for the newly created column.
 func (client *FieldsTag) Create(baseId string, tableId string, payload Field) (Field, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
@@ -65,62 +66,57 @@ func (client *FieldsTag) Create(baseId string, tableId string, payload Field) (F
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response Field
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return Field{}, err
+        var data Field
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Field{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Field{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return Field{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Field{}, err
-            }
-
-            return Field{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Field{}, err
-            }
-
-            return Field{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Field{}, err
-            }
-
-            return Field{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return Field{}, errors.New("the server returned an unknown status code")
+        return Field{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Field{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Field{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return Field{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
-// Update 
+// Update Updates the name and/or description of a field. At least one of name or description must be specified.
 func (client *FieldsTag) Update(baseId string, tableId string, columnId string, payload Field) (Field, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
@@ -165,60 +161,56 @@ func (client *FieldsTag) Update(baseId string, tableId string, columnId string, 
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response Field
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return Field{}, err
+        var data Field
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Field{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Field{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return Field{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Field{}, err
-            }
-
-            return Field{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Field{}, err
-            }
-
-            return Field{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Field{}, err
-            }
-
-            return Field{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return Field{}, errors.New("the server returned an unknown status code")
+        return Field{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Field{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Field{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return Field{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
+
 
 
 
