@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/sdk-fabric/airtable-go/sdk"
-	"github.com/apioo/sdkgen-go"
+	"github.com/apioo/sdkgen-go/v2"
 	"testing"
 )
 
