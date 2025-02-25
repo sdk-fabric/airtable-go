@@ -8,7 +8,8 @@ import (
     "bytes"
     "encoding/json"
     "errors"
-    "github.com/apioo/sdkgen-go"
+    "fmt"
+    
     "io"
     "net/http"
     "net/url"
@@ -70,59 +71,54 @@ func (client *RecordsTag) GetAll(baseId string, tableIdOrName string, timeZone s
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response RecordCollection
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return RecordCollection{}, err
+        var data RecordCollection
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return RecordCollection{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return RecordCollection{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return RecordCollection{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return RecordCollection{}, err
-            }
-
-            return RecordCollection{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return RecordCollection{}, err
-            }
-
-            return RecordCollection{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return RecordCollection{}, err
-            }
-
-            return RecordCollection{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return RecordCollection{}, errors.New("the server returned an unknown status code")
+        return RecordCollection{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return RecordCollection{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return RecordCollection{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return RecordCollection{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Get Retrieve a single record. Any &quot;empty&quot; fields (e.g. &quot;&quot;, [], or false) in the record will not be returned.
@@ -163,59 +159,54 @@ func (client *RecordsTag) Get(baseId string, tableIdOrName string, recordId stri
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response Record
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return Record{}, err
+        var data Record
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
-
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
-
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
-
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return Record{}, errors.New("the server returned an unknown status code")
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return Record{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Create Creates multiple records. Note that table names and table ids can be used interchangeably. We recommend using table IDs so you don&#039;t need to modify your API request when your table name changes.
@@ -262,59 +253,54 @@ func (client *RecordsTag) Create(baseId string, tableIdOrName string, payload Re
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response RecordCollection
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return RecordCollection{}, err
+        var data RecordCollection
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return RecordCollection{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return RecordCollection{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return RecordCollection{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return RecordCollection{}, err
-            }
-
-            return RecordCollection{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return RecordCollection{}, err
-            }
-
-            return RecordCollection{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return RecordCollection{}, err
-            }
-
-            return RecordCollection{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return RecordCollection{}, errors.New("the server returned an unknown status code")
+        return RecordCollection{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return RecordCollection{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return RecordCollection{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return RecordCollection{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Replace Updates a single record. Table names and table ids can be used interchangeably. We recommend using table IDs so you don&#039;t need to modify your API request when your table name changes.
@@ -362,59 +348,54 @@ func (client *RecordsTag) Replace(baseId string, tableIdOrName string, recordId 
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response Record
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return Record{}, err
+        var data Record
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
-
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
-
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
-
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return Record{}, errors.New("the server returned an unknown status code")
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return Record{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // ReplaceAll Updates up to 10 records, or upserts them when performUpsert is set.
@@ -461,59 +442,54 @@ func (client *RecordsTag) ReplaceAll(baseId string, tableIdOrName string, payloa
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response BulkUpdateResponse
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return BulkUpdateResponse{}, err
+        var data BulkUpdateResponse
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return BulkUpdateResponse{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return BulkUpdateResponse{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return BulkUpdateResponse{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return BulkUpdateResponse{}, err
-            }
-
-            return BulkUpdateResponse{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return BulkUpdateResponse{}, err
-            }
-
-            return BulkUpdateResponse{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return BulkUpdateResponse{}, err
-            }
-
-            return BulkUpdateResponse{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return BulkUpdateResponse{}, errors.New("the server returned an unknown status code")
+        return BulkUpdateResponse{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return BulkUpdateResponse{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return BulkUpdateResponse{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return BulkUpdateResponse{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Update Updates a single record. Table names and table ids can be used interchangeably. We recommend using table IDs so you don&#039;t need to modify your API request when your table name changes.
@@ -561,59 +537,54 @@ func (client *RecordsTag) Update(baseId string, tableIdOrName string, recordId s
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response Record
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return Record{}, err
+        var data Record
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
-
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
-
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Record{}, err
-            }
-
-            return Record{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return Record{}, errors.New("the server returned an unknown status code")
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Record{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return Record{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // UpdateAll Updates up to 10 records, or upserts them when performUpsert is set.
@@ -660,60 +631,104 @@ func (client *RecordsTag) UpdateAll(baseId string, tableIdOrName string, payload
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response BulkUpdateResponse
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return BulkUpdateResponse{}, err
+        var data BulkUpdateResponse
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return BulkUpdateResponse{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return BulkUpdateResponse{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return BulkUpdateResponse{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return BulkUpdateResponse{}, err
-            }
-
-            return BulkUpdateResponse{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return BulkUpdateResponse{}, err
-            }
-
-            return BulkUpdateResponse{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return BulkUpdateResponse{}, err
-            }
-
-            return BulkUpdateResponse{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return BulkUpdateResponse{}, errors.New("the server returned an unknown status code")
+        return BulkUpdateResponse{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return BulkUpdateResponse{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return BulkUpdateResponse{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return BulkUpdateResponse{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
+
+// Delete Deletes a single record
+func (client *RecordsTag) Delete(baseId string, tableIdOrName string, recordId string) (DeleteResponse, error) {
+    pathParams := make(map[string]interface{})
+    pathParams["baseId"] = baseId
+    pathParams["tableIdOrName"] = tableIdOrName
+    pathParams["recordId"] = recordId
+
+    queryParams := make(map[string]interface{})
+
+    var queryStructNames []string
+
+    u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName/:recordId", pathParams))
+    if err != nil {
+        return DeleteResponse{}, err
+    }
+
+    u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
+
+
+    req, err := http.NewRequest("DELETE", u.String(), nil)
+    if err != nil {
+        return DeleteResponse{}, err
+    }
+
+
+    resp, err := client.internal.HttpClient.Do(req)
+    if err != nil {
+        return DeleteResponse{}, err
+    }
+
+    defer resp.Body.Close()
+
+    respBody, err := io.ReadAll(resp.Body)
+    if err != nil {
+        return DeleteResponse{}, err
+    }
+
+    if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+        var data DeleteResponse
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    return DeleteResponse{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+}
+
 
 
 

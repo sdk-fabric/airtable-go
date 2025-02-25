@@ -8,7 +8,8 @@ import (
     "bytes"
     "encoding/json"
     "errors"
-    "github.com/apioo/sdkgen-go"
+    "fmt"
+    
     "io"
     "net/http"
     "net/url"
@@ -64,62 +65,57 @@ func (client *TablesTag) Create(baseId string, payload Table) (Table, error) {
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response Table
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return Table{}, err
+        var data Table
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Table{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Table{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return Table{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Table{}, err
-            }
-
-            return Table{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Table{}, err
-            }
-
-            return Table{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Table{}, err
-            }
-
-            return Table{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return Table{}, errors.New("the server returned an unknown status code")
+        return Table{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Table{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Table{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return Table{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
-// Update 
+// Update Updates the name and/or description of a table. At least one of name or description must be specified.
 func (client *TablesTag) Update(baseId string, tableIdOrName string, payload Table) (Table, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
@@ -163,60 +159,56 @@ func (client *TablesTag) Update(baseId string, tableIdOrName string, payload Tab
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-        var response Table
-        err = json.Unmarshal(respBody, &response)
-        if err != nil {
-            return Table{}, err
+        var data Table
+        err := json.Unmarshal(respBody, &data)
+
+        return data, err
+    }
+
+    var statusCode = resp.StatusCode
+    if statusCode == 400 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Table{}, &ErrorException{
+            Payload: data,
+            Previous: err,
         }
-
-        return response, nil
     }
 
-    switch resp.StatusCode {
-        case 400:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Table{}, err
-            }
+    if statusCode == 403 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
 
-            return Table{}, &ErrorException{
-                Payload: response,
-            }
-        case 403:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Table{}, err
-            }
-
-            return Table{}, &ErrorException{
-                Payload: response,
-            }
-        case 404:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Table{}, err
-            }
-
-            return Table{}, &ErrorException{
-                Payload: response,
-            }
-        case 500:
-            var response Error
-            err = json.Unmarshal(respBody, &response)
-            if err != nil {
-                return Table{}, err
-            }
-
-            return Table{}, &ErrorException{
-                Payload: response,
-            }
-        default:
-            return Table{}, errors.New("the server returned an unknown status code")
+        return Table{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
     }
+
+    if statusCode == 404 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Table{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    if statusCode == 500 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return Table{}, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return Table{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
+
 
 
 
