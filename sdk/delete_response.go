@@ -7,3 +7,4 @@ type DeleteResponse struct {
     Deleted bool `json:"deleted"`
     Id string `json:"id"`
 }
+

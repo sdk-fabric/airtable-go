@@ -9,7 +9,7 @@ import (
     "encoding/json"
     "errors"
     "fmt"
-    
+    "github.com/apioo/sdkgen-go/v2"
     "io"
     "net/http"
     "net/url"
@@ -23,7 +23,7 @@ type RecordsTag struct {
 
 
 // GetAll List records in a table. Note that table names and table ids can be used interchangeably. We recommend using table IDs so you don&#039;t need to modify your API request when your table name changes.
-func (client *RecordsTag) GetAll(baseId string, tableIdOrName string, timeZone string, userLocale string, pageSize int, maxRecords int, offset string, view string, sort string, filterByFormula string, cellFormat string, fields string, returnFieldsByFieldId bool, recordMetadata string) (RecordCollection, error) {
+func (client *RecordsTag) GetAll(baseId string, tableIdOrName string, timeZone string, userLocale string, pageSize int, maxRecords int, offset string, view string, sort string, filterByFormula string, cellFormat string, fields string, returnFieldsByFieldId bool, recordMetadata string) (*RecordCollection, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -46,7 +46,7 @@ func (client *RecordsTag) GetAll(baseId string, tableIdOrName string, timeZone s
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName", pathParams))
     if err != nil {
-        return RecordCollection{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
@@ -54,75 +54,45 @@ func (client *RecordsTag) GetAll(baseId string, tableIdOrName string, timeZone s
 
     req, err := http.NewRequest("GET", u.String(), nil)
     if err != nil {
-        return RecordCollection{}, err
+        return nil, err
     }
 
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return RecordCollection{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return RecordCollection{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data RecordCollection
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return RecordCollection{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return RecordCollection{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return RecordCollection{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return RecordCollection{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return RecordCollection{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Get Retrieve a single record. Any &quot;empty&quot; fields (e.g. &quot;&quot;, [], or false) in the record will not be returned.
-func (client *RecordsTag) Get(baseId string, tableIdOrName string, recordId string) (Record, error) {
+func (client *RecordsTag) Get(baseId string, tableIdOrName string, recordId string) (*Record, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -134,7 +104,7 @@ func (client *RecordsTag) Get(baseId string, tableIdOrName string, recordId stri
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName/:recordId", pathParams))
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
@@ -142,75 +112,45 @@ func (client *RecordsTag) Get(baseId string, tableIdOrName string, recordId stri
 
     req, err := http.NewRequest("GET", u.String(), nil)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data Record
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return Record{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Record{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Record{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Record{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return Record{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Create Creates multiple records. Note that table names and table ids can be used interchangeably. We recommend using table IDs so you don&#039;t need to modify your API request when your table name changes.
-func (client *RecordsTag) Create(baseId string, tableIdOrName string, payload RecordCollection) (RecordCollection, error) {
+func (client *RecordsTag) Create(baseId string, tableIdOrName string, payload RecordCollection) (*RecordCollection, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -221,90 +161,60 @@ func (client *RecordsTag) Create(baseId string, tableIdOrName string, payload Re
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName", pathParams))
     if err != nil {
-        return RecordCollection{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
 
     raw, err := json.Marshal(payload)
     if err != nil {
-        return RecordCollection{}, err
+        return nil, err
     }
 
     var reqBody = bytes.NewReader(raw)
 
     req, err := http.NewRequest("POST", u.String(), reqBody)
     if err != nil {
-        return RecordCollection{}, err
+        return nil, err
     }
 
     req.Header.Set("Content-Type", "application/json")
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return RecordCollection{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return RecordCollection{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data RecordCollection
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return RecordCollection{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return RecordCollection{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return RecordCollection{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return RecordCollection{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return RecordCollection{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Replace Updates a single record. Table names and table ids can be used interchangeably. We recommend using table IDs so you don&#039;t need to modify your API request when your table name changes.
-func (client *RecordsTag) Replace(baseId string, tableIdOrName string, recordId string, payload Record) (Record, error) {
+func (client *RecordsTag) Replace(baseId string, tableIdOrName string, recordId string, payload Record) (*Record, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -316,90 +226,60 @@ func (client *RecordsTag) Replace(baseId string, tableIdOrName string, recordId 
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName/:recordId", pathParams))
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
 
     raw, err := json.Marshal(payload)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     var reqBody = bytes.NewReader(raw)
 
     req, err := http.NewRequest("PUT", u.String(), reqBody)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     req.Header.Set("Content-Type", "application/json")
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data Record
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return Record{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Record{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Record{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Record{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return Record{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // ReplaceAll Updates up to 10 records, or upserts them when performUpsert is set.
-func (client *RecordsTag) ReplaceAll(baseId string, tableIdOrName string, payload BulkUpdateRequest) (BulkUpdateResponse, error) {
+func (client *RecordsTag) ReplaceAll(baseId string, tableIdOrName string, payload BulkUpdateRequest) (*BulkUpdateResponse, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -410,90 +290,60 @@ func (client *RecordsTag) ReplaceAll(baseId string, tableIdOrName string, payloa
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName", pathParams))
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
 
     raw, err := json.Marshal(payload)
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     var reqBody = bytes.NewReader(raw)
 
     req, err := http.NewRequest("PUT", u.String(), reqBody)
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     req.Header.Set("Content-Type", "application/json")
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data BulkUpdateResponse
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return BulkUpdateResponse{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return BulkUpdateResponse{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return BulkUpdateResponse{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return BulkUpdateResponse{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return BulkUpdateResponse{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Update Updates a single record. Table names and table ids can be used interchangeably. We recommend using table IDs so you don&#039;t need to modify your API request when your table name changes.
-func (client *RecordsTag) Update(baseId string, tableIdOrName string, recordId string, payload Record) (Record, error) {
+func (client *RecordsTag) Update(baseId string, tableIdOrName string, recordId string, payload Record) (*Record, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -505,90 +355,60 @@ func (client *RecordsTag) Update(baseId string, tableIdOrName string, recordId s
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName/:recordId", pathParams))
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
 
     raw, err := json.Marshal(payload)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     var reqBody = bytes.NewReader(raw)
 
     req, err := http.NewRequest("PATCH", u.String(), reqBody)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     req.Header.Set("Content-Type", "application/json")
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return Record{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data Record
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return Record{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Record{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Record{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Record{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return Record{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // UpdateAll Updates up to 10 records, or upserts them when performUpsert is set.
-func (client *RecordsTag) UpdateAll(baseId string, tableIdOrName string, payload BulkUpdateRequest) (BulkUpdateResponse, error) {
+func (client *RecordsTag) UpdateAll(baseId string, tableIdOrName string, payload BulkUpdateRequest) (*BulkUpdateResponse, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -599,90 +419,60 @@ func (client *RecordsTag) UpdateAll(baseId string, tableIdOrName string, payload
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName", pathParams))
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
 
     raw, err := json.Marshal(payload)
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     var reqBody = bytes.NewReader(raw)
 
     req, err := http.NewRequest("PATCH", u.String(), reqBody)
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     req.Header.Set("Content-Type", "application/json")
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return BulkUpdateResponse{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data BulkUpdateResponse
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return BulkUpdateResponse{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return BulkUpdateResponse{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return BulkUpdateResponse{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return BulkUpdateResponse{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return BulkUpdateResponse{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Delete Deletes a single record
-func (client *RecordsTag) Delete(baseId string, tableIdOrName string, recordId string) (DeleteResponse, error) {
+func (client *RecordsTag) Delete(baseId string, tableIdOrName string, recordId string) (*DeleteResponse, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -694,7 +484,7 @@ func (client *RecordsTag) Delete(baseId string, tableIdOrName string, recordId s
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName/:recordId", pathParams))
     if err != nil {
-        return DeleteResponse{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
@@ -702,31 +492,41 @@ func (client *RecordsTag) Delete(baseId string, tableIdOrName string, recordId s
 
     req, err := http.NewRequest("DELETE", u.String(), nil)
     if err != nil {
-        return DeleteResponse{}, err
+        return nil, err
     }
 
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return DeleteResponse{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return DeleteResponse{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data DeleteResponse
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    return DeleteResponse{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    if statusCode >= 0 && statusCode <= 999 {
+        var data Error
+        err := json.Unmarshal(respBody, &data)
+
+        return nil, &ErrorException{
+            Payload: data,
+            Previous: err,
+        }
+    }
+
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 

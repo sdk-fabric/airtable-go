@@ -9,7 +9,7 @@ import (
     "encoding/json"
     "errors"
     "fmt"
-    
+    "github.com/apioo/sdkgen-go/v2"
     "io"
     "net/http"
     "net/url"
@@ -23,7 +23,7 @@ type CommentsTag struct {
 
 
 // GetAll Returns a list of comments for the record from newest to oldest.
-func (client *CommentsTag) GetAll(baseId string, tableIdOrName string, recordId string) (CommentCollection, error) {
+func (client *CommentsTag) GetAll(baseId string, tableIdOrName string, recordId string) (*CommentCollection, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -35,7 +35,7 @@ func (client *CommentsTag) GetAll(baseId string, tableIdOrName string, recordId 
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName/:recordId/comments", pathParams))
     if err != nil {
-        return CommentCollection{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
@@ -43,75 +43,45 @@ func (client *CommentsTag) GetAll(baseId string, tableIdOrName string, recordId 
 
     req, err := http.NewRequest("GET", u.String(), nil)
     if err != nil {
-        return CommentCollection{}, err
+        return nil, err
     }
 
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return CommentCollection{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return CommentCollection{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data CommentCollection
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return CommentCollection{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return CommentCollection{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return CommentCollection{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return CommentCollection{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return CommentCollection{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Create Creates a comment on a record. User mentioned is supported.
-func (client *CommentsTag) Create(baseId string, tableIdOrName string, recordId string, payload Comment) (Comment, error) {
+func (client *CommentsTag) Create(baseId string, tableIdOrName string, recordId string, payload Comment) (*Comment, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -123,90 +93,60 @@ func (client *CommentsTag) Create(baseId string, tableIdOrName string, recordId 
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName/:recordId/comments", pathParams))
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
 
     raw, err := json.Marshal(payload)
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     var reqBody = bytes.NewReader(raw)
 
     req, err := http.NewRequest("POST", u.String(), reqBody)
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     req.Header.Set("Content-Type", "application/json")
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data Comment
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return Comment{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Comment{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Comment{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Comment{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return Comment{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Update Updates a comment on a record. API users can only update comments they have created. User mentioned is supported.
-func (client *CommentsTag) Update(baseId string, tableIdOrName string, recordId string, rowCommentId string, payload Comment) (Comment, error) {
+func (client *CommentsTag) Update(baseId string, tableIdOrName string, recordId string, rowCommentId string, payload Comment) (*Comment, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -219,90 +159,60 @@ func (client *CommentsTag) Update(baseId string, tableIdOrName string, recordId 
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName/:recordId/comments/:rowCommentId", pathParams))
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
 
     raw, err := json.Marshal(payload)
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     var reqBody = bytes.NewReader(raw)
 
     req, err := http.NewRequest("PATCH", u.String(), reqBody)
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     req.Header.Set("Content-Type", "application/json")
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return Comment{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data Comment
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return Comment{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Comment{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Comment{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Comment{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return Comment{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Delete Deletes a comment from a record. Non-admin API users can only delete comments they have created. Enterprise Admins can delete any comment from a record.
-func (client *CommentsTag) Delete(baseId string, tableIdOrName string, recordId string, rowCommentId string) (DeleteResponse, error) {
+func (client *CommentsTag) Delete(baseId string, tableIdOrName string, recordId string, rowCommentId string) (*DeleteResponse, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableIdOrName"] = tableIdOrName
@@ -315,7 +225,7 @@ func (client *CommentsTag) Delete(baseId string, tableIdOrName string, recordId 
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/:baseId/:tableIdOrName/:recordId/comments/:rowCommentId", pathParams))
     if err != nil {
-        return DeleteResponse{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
@@ -323,71 +233,41 @@ func (client *CommentsTag) Delete(baseId string, tableIdOrName string, recordId 
 
     req, err := http.NewRequest("DELETE", u.String(), nil)
     if err != nil {
-        return DeleteResponse{}, err
+        return nil, err
     }
 
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return DeleteResponse{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return DeleteResponse{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data DeleteResponse
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return DeleteResponse{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return DeleteResponse{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return DeleteResponse{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return DeleteResponse{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return DeleteResponse{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 

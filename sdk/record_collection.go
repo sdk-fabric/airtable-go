@@ -7,3 +7,4 @@ type RecordCollection struct {
     Offset string `json:"offset"`
     Records []Record `json:"records"`
 }
+

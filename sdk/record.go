@@ -8,3 +8,4 @@ type Record struct {
     CreatedTime string `json:"createdTime"`
     Fields map[string]any `json:"fields"`
 }
+

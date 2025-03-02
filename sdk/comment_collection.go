@@ -7,3 +7,4 @@ type CommentCollection struct {
     Offset string `json:"offset"`
     Records []Comment `json:"records"`
 }
+

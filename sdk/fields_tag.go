@@ -9,7 +9,7 @@ import (
     "encoding/json"
     "errors"
     "fmt"
-    
+    "github.com/apioo/sdkgen-go/v2"
     "io"
     "net/http"
     "net/url"
@@ -23,7 +23,7 @@ type FieldsTag struct {
 
 
 // Create Creates a new column and returns the schema for the newly created column.
-func (client *FieldsTag) Create(baseId string, tableId string, payload Field) (Field, error) {
+func (client *FieldsTag) Create(baseId string, tableId string, payload Field) (*Field, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableId"] = tableId
@@ -34,90 +34,60 @@ func (client *FieldsTag) Create(baseId string, tableId string, payload Field) (F
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/meta/bases/:baseId/tables/:tableId/fields", pathParams))
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
 
     raw, err := json.Marshal(payload)
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     var reqBody = bytes.NewReader(raw)
 
     req, err := http.NewRequest("POST", u.String(), reqBody)
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     req.Header.Set("Content-Type", "application/json")
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data Field
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return Field{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Field{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Field{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Field{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return Field{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 // Update Updates the name and/or description of a field. At least one of name or description must be specified.
-func (client *FieldsTag) Update(baseId string, tableId string, columnId string, payload Field) (Field, error) {
+func (client *FieldsTag) Update(baseId string, tableId string, columnId string, payload Field) (*Field, error) {
     pathParams := make(map[string]interface{})
     pathParams["baseId"] = baseId
     pathParams["tableId"] = tableId
@@ -129,86 +99,56 @@ func (client *FieldsTag) Update(baseId string, tableId string, columnId string, 
 
     u, err := url.Parse(client.internal.Parser.Url("/v0/meta/bases/:baseId/tables/:tableId/fields/:columnId", pathParams))
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     u.RawQuery = client.internal.Parser.QueryWithStruct(queryParams, queryStructNames).Encode()
 
     raw, err := json.Marshal(payload)
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     var reqBody = bytes.NewReader(raw)
 
     req, err := http.NewRequest("PATCH", u.String(), reqBody)
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     req.Header.Set("Content-Type", "application/json")
 
     resp, err := client.internal.HttpClient.Do(req)
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     defer resp.Body.Close()
 
     respBody, err := io.ReadAll(resp.Body)
     if err != nil {
-        return Field{}, err
+        return nil, err
     }
 
     if resp.StatusCode >= 200 && resp.StatusCode < 300 {
         var data Field
         err := json.Unmarshal(respBody, &data)
 
-        return data, err
+        return &data, err
     }
 
     var statusCode = resp.StatusCode
-    if statusCode == 400 {
+    if statusCode >= 0 && statusCode <= 999 {
         var data Error
         err := json.Unmarshal(respBody, &data)
 
-        return Field{}, &ErrorException{
+        return nil, &ErrorException{
             Payload: data,
             Previous: err,
         }
     }
 
-    if statusCode == 403 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Field{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 404 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Field{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    if statusCode == 500 {
-        var data Error
-        err := json.Unmarshal(respBody, &data)
-
-        return Field{}, &ErrorException{
-            Payload: data,
-            Previous: err,
-        }
-    }
-
-    return Field{}, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
+    return nil, errors.New(fmt.Sprint("The server returned an unknown status code: ", statusCode))
 }
 
 

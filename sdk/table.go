@@ -10,3 +10,4 @@ type Table struct {
     Description string `json:"description"`
     Fields []Field `json:"fields"`
 }
+

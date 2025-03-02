@@ -7,3 +7,4 @@ type CommentReaction struct {
     Emoji string `json:"emoji"`
     ReactingUser *CommentAuthor `json:"reactingUser"`
 }
+

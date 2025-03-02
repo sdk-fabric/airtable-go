@@ -6,3 +6,4 @@
 type Error struct {
     Error *ErrorDetails `json:"error"`
 }
+

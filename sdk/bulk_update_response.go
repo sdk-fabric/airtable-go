@@ -8,3 +8,4 @@ type BulkUpdateResponse struct {
     UpdatedRecords []string `json:"updatedRecords"`
     Records []Record `json:"records"`
 }
+

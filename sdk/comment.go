@@ -12,3 +12,4 @@ type Comment struct {
     Reactions string `json:"reactions"`
     Author *CommentAuthor `json:"author"`
 }
+

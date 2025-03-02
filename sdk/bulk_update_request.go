@@ -9,3 +9,4 @@ type BulkUpdateRequest struct {
     Typecast bool `json:"typecast"`
     Records []Record `json:"records"`
 }
+
