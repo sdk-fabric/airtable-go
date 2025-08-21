@@ -1,4 +1,4 @@
-module github.com/sdk-fabric/airtable
+module github.com/sdk-fabric/airtable-go
 
 go 1.18
 
